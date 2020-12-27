@@ -55,7 +55,7 @@ function defineReactive(data, key, value) {
 }
 
 export function observe(data) {
-  if (!isObject(data)) {
+  if (!isObject(data) || data.__ob__) {
     return;
   }
 

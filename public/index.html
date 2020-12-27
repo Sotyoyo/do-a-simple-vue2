@@ -8,17 +8,14 @@
 </head>
 
 <body>
-
+  <div id="app">{{name}}</div>
   <script src="../dist/umd/vue.js"></script>
   <script>
     let vm = new Vue({
       el: '#app',
       data() {
         return {
-          a: 1,
-          obj: {
-            x: 3
-          },
+          name: 'vue',
           arr: [
             {
               name: 'ft',
@@ -29,13 +26,7 @@
       }
     })
 
-    vm._data.obj.x = 4
-    vm._data.arr.splice(0, 0, {
-      name: 'te',
-      age: 25
-    })
-    console.log(Object.values(vm))
-    console.log(vm.obj)
+
   </script>
 </body>
 
