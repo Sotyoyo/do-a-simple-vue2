@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script src="../dist/umd/vue.js"></script>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          a: 1,
+          obj: {
+            x: 3
+          },
+          arr: [
+            {
+              name: 'ft',
+              age: 25
+            }
+          ]
+        }
+      }
+    })
+
+    vm._data.obj.x = 4
+    vm._data.arr.splice(0, 0, {
+      name: 'te',
+      age: 25
+    })
+    console.log(Object.values(vm._data))
+  </script>
+</body>
+
+</html>
