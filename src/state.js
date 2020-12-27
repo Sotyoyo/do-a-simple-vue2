@@ -1,4 +1,5 @@
 import { observe } from "./observer/index.js";
+import { proxy } from "./utils.js";
 
 export function initState(vm) {
   const opts = vm.$options;
@@ -24,6 +25,12 @@ function initData() {
   const vm = this;
   let data = vm.$options.data;
   data = vm._data = typeof data === "function" ? data.call(vm) : data;
+
+  // 代理到vm上
+  for (let key in data) {
+    proxy(vm, "_data", key);
+  }
+
   observe(data);
 }
 

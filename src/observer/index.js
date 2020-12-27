@@ -33,6 +33,7 @@ class Observer {
 }
 
 // vue2会对对象进行遍历 每一个属性都用defineProperty重新定义 所以性能差
+// 新增的属性检测不到 需要$set
 function defineReactive(data, key, value) {
   observe(value);
   Object.defineProperty(data, key, {
