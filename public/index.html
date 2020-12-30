@@ -11,10 +11,10 @@
   <div id="app">
     <ul>
       <li>
-        <p>p1</p>
+        <p>p1 - {{name}}</p>
       </li>
       <li>
-        <p>p2</p>
+        <p>p2 - {{person}}</p>
       </li>
     </ul>
   </div>
@@ -25,12 +25,10 @@
       data() {
         return {
           name: 'vue',
-          arr: [
-            {
-              name: 'ft',
-              age: 25
-            }
-          ]
+          person: {
+            name: 'ft',
+            age: 25
+          }
         }
       }
     })

@@ -18,16 +18,5 @@ export function initMixin(Vue) {
     const vm = this;
     const options = vm.$options;
     el = document.querySelector(el);
-
-    // 如果没有render方法
-    if (!options.render) {
-      let template = options.template;
-      // 如果没有模板但是有el
-      if (!template && el) {
-        template = el.outerHTML;
-      }
-      const render = compileToFunctions(template);
-      options.render = render;
-    }
   };
 }
