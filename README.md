@@ -19,3 +19,12 @@ rollup -c -w
 
 // 
 exclude: "node_modules/**", // glob语法
+
+
+## 生成代码
+
+1. 模版引擎原理
+```
+<!-- js沙箱 -->
+let render = new Function(`with(this){return ${code}}`);
+```
