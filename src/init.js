@@ -1,5 +1,5 @@
 import { initState } from "./state.js";
-import { compileToFunctions } from "./compile.js";
+import { compileToFunctions } from "./compile/index.js";
 
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
@@ -28,10 +28,8 @@ export function initMixin(Vue) {
       } else if (!template && !el) {
         throw Error("没有可编译的模版！");
       }
-      // vm.$options.render = compileToFunctions(template);
-      console.log(compileToFunctions(template));
+      vm.$options.render = compileToFunctions(template);
     }
-
-    // updateComponent()
+    console.log(vm._render());
   };
 }

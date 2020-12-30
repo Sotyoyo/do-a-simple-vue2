@@ -4,12 +4,11 @@ const startTagOpen = new RegExp(`^<${qnameCapture}`); // 标签开头的正则 �
 const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`); // 匹配标签结尾的 </div>
 const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配属性的
 const startTagClose = /^\s*(\/?)>/; // 匹配标签结束的 >
-const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 
 let root = null;
 let stack = [];
-const ELEMENT_TYPE = 1;
-const TEXT_TYPE = 3;
+export const ELEMENT_TYPE = 1;
+export const TEXT_TYPE = 3;
 
 function createAstElemnt(tagName, attrs, type = ELEMENT_TYPE) {
   return {
@@ -21,20 +20,52 @@ function createAstElemnt(tagName, attrs, type = ELEMENT_TYPE) {
   };
 }
 
-export function compileToFunctions(html) {
+export function parseHtml(html) {
   // 1. 词法解析
+  // 2. 转成ast树
+  // 3. 代码生成
 
   function start(tagName, attrs) {
-    console.log(" meet startTag: ", tagName, attrs);
+    // console.log(" meet startTag: ", tagName, attrs);
+    let element = createAstElemnt(tagName, attrs, ELEMENT_TYPE);
+    if (!root) {
+      // 如果不存在根节点
+      root = element;
+    }
+    stack.push(element);
   }
 
   function chars(text) {
-    text = text.trim();
-    text && console.log(" meet chars:    ", text);
+    if (!text.trim()) {
+      text = text.trim();
+    } else {
+      text = text.replace(/\s+/g, " ");
+    }
+
+    // text && console.log(" meet chars:    ", text);
+    if (text) {
+      let textElement = createAstElemnt("text", [], TEXT_TYPE);
+      let lastNode = stack[stack.length - 1];
+      textElement.parent = lastNode.tagName;
+      textElement.children.push(text);
+      lastNode.children.push(textElement);
+    }
   }
 
   function end(tagName) {
-    console.log(" meet endTag:   ", tagName);
+    // console.log(" meet endTag:   ", tagName);
+    // 匹配成功，出栈
+    let lastNode = stack.pop();
+    if (!lastNode || tagName !== lastNode.tag) {
+      throw Error("标签不能匹配！");
+    }
+
+    if (!stack[stack.length - 1]) {
+      // 到达栈底部
+    } else {
+      lastNode.parent = stack[stack.length - 1].tagName;
+      stack[stack.length - 1].children.push(lastNode);
+    }
   }
 
   function advance(step) {
@@ -112,5 +143,5 @@ export function compileToFunctions(html) {
     }
   }
 
-  return html;
+  return root;
 }
