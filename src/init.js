@@ -18,5 +18,20 @@ export function initMixin(Vue) {
     const vm = this;
     const options = vm.$options;
     el = document.querySelector(el);
+
+    if (!options.render) {
+      // 如果有template有限走template
+      let template = options.template;
+      if (template) {
+      } else if (!template && el) {
+        template = el.outerHTML;
+      } else if (!template && !el) {
+        throw Error("没有可编译的模版！");
+      }
+      // vm.$options.render = compileToFunctions(template);
+      console.log(compileToFunctions(template));
+    }
+
+    // updateComponent()
   };
 }
