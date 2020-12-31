@@ -1,5 +1,6 @@
 import { initState } from "./state.js";
 import { compileToFunctions } from "./compile/index.js";
+import { mountComponent } from "./lifecycle.js";
 
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
@@ -18,7 +19,8 @@ export function initMixin(Vue) {
     const vm = this;
     const options = vm.$options;
     el = document.querySelector(el);
-
+    vm.$el = el;
+    console.log(el);
     if (!options.render) {
       // 如果有template有限走template
       let template = options.template;
@@ -30,6 +32,7 @@ export function initMixin(Vue) {
       }
       vm.$options.render = compileToFunctions(template);
     }
-    console.log(vm._render());
+
+    mountComponent(vm, el);
   };
 }
