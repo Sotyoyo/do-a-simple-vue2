@@ -1,4 +1,4 @@
-import { popTarget, pushTarget } from "./dep";
+import { popTarget, pushTarget, default as Dep } from "./dep";
 import { queueWatcher } from "./scheduler";
 
 let id = 0;
@@ -7,14 +7,30 @@ class Watcher {
   constructor(vm, exprOrFn, cb, options) {
     this.id = "watcher-" + id++;
     this.exprOrFn = exprOrFn;
+    this.user = !!options.user;
     this.cb = cb;
+    this.vm = vm;
     this.deps = [];
     this.depsId = new Set();
     this.options = options;
 
-    this.getter = exprOrFn;
+    if (typeof exprOrFn === "string") {
+      this.getter = function () {
+        let path = exprOrFn.split(".");
+        let obj = vm;
+        path.forEach((a) => {
+          obj = obj[a];
+        });
+        return obj;
+      };
+    } else {
+      this.getter = () => {
+        exprOrFn();
+      };
+    }
 
-    this.get();
+    // new watcher的时候就会调一遍
+    this.value = this.get();
   }
 
   addDep(dep) {
@@ -27,9 +43,11 @@ class Watcher {
   }
 
   get() {
+    // console.trace();
     pushTarget(this);
-    this.getter();
+    const value = this.getter();
     popTarget(this);
+    return value;
   }
 
   update() {
@@ -38,8 +56,15 @@ class Watcher {
   }
 
   run() {
-    // 后续要有其他功能
-    this.get();
+    // 更新的时候走这个方法，会有新的值
+    const newValue = this.get();
+    const oldValue = this.value;
+
+    // 重写当前值
+    this.value = newValue;
+    if (this.user) {
+      this.cb.call(this.vm, newValue, oldValue);
+    }
   }
 }
 
