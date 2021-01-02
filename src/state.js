@@ -13,7 +13,6 @@ export function stateMixin(Vue) {
 
 export function initState(vm) {
   const opts = vm.$options;
-
   if (opts.props) {
     initProps.call(vm);
   }
@@ -64,7 +63,35 @@ function createWatcher(vm, key, handler) {
   vm.$watch(key, handler);
 }
 
-function initComputed() {}
+function initComputed() {
+  const vm = this;
+  const computed = vm.$options.computed;
+  for (let key in computed) {
+    const userDef = computed[key];
+    let getter = typeof userDef === "function" ? userDef : userDef.get;
+
+    // 每一个计算属性实际就是一个watcher
+    // 因为计算属性默认是不执行的，所以要给一个lazy true
+    new Watcher(vm, getter, () => {}, { lazy: true });
+    // 将key定义在vm上，否则是取不到的
+
+    defineComputed(vm, key, userDef);
+  }
+}
+
+function defineComputed(vm, key, userDef) {
+  // 这是为了有的时候有set有的时候没有
+  let sharedProperty = {};
+
+  if (typeof userDef === "function") {
+    sharedProperty.get = userDef;
+  } else {
+    sharedProperty.get = userDef.get;
+    sharedProperty.set = userDef.set;
+  }
+
+  Object.defineProperty(vm, key, sharedProperty);
+}
 
 function initProps() {
   console.log(this.$options.props);

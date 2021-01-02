@@ -10,7 +10,7 @@
 <body>
   <div id="app" class="app" a=1>
     <ul>
-      <li>{{name}}</li>
+      <li>{{fullName}}</li>
     </ul>
   </div>
   <script src="../dist/umd/vue.js"></script>
@@ -19,18 +19,32 @@
       el: '#app',
       data() {
         return {
-          name: 'vue2'
+          firstName: 'vue',
+          lastName: '2'
         }
       },
-      watch: {
-        name(newValue, oldValue) {
-          console.log(newValue, oldValue);
-        }
+      computed: { // Object.defineProperty => getter
+        // aName() {
+        //   return this.firstName
+        // },
+        fullName: {
+          get() {
+            return this.firstName + ' ' + this.lastName
+          },
+          set(newValue) {
+            console.log('fullname set new ', newValue)
+          }
+        },
       }
     })
 
+    // 计算属性默认不执行，多次取值，
+    // 如果依赖的值不变，就不会重新执行
+    // 如果依赖的值变化 需要重新执行
+    // dirty true 取值以后就变false 依赖值变化了，再变成true
+
     setTimeout(() => {
-      vm.name = 'vue3'
+      vm.lastName = '3'
     }, 1000)
   </script>
 </body>

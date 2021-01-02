@@ -7,12 +7,13 @@ class Watcher {
   constructor(vm, exprOrFn, cb, options) {
     this.id = "watcher-" + id++;
     this.exprOrFn = exprOrFn;
-    this.user = !!options.user;
     this.cb = cb;
     this.vm = vm;
     this.deps = [];
     this.depsId = new Set();
     this.options = options;
+    this.user = !!options.user;
+    this.lazy = !!options.lazy;
 
     if (typeof exprOrFn === "string") {
       this.getter = function () {
@@ -29,8 +30,8 @@ class Watcher {
       };
     }
 
-    // new watcher的时候就会调一遍
-    this.value = this.get();
+    // new watcher的时候就会调一遍 除非是lazy
+    this.value = this.lazy ? undefined : this.get();
   }
 
   addDep(dep) {
