@@ -20,7 +20,6 @@ export function initMixin(Vue) {
     const options = vm.$options;
     el = document.querySelector(el);
     vm.$el = el;
-    console.log(el);
     if (!options.render) {
       // 如果有template有限走template
       let template = options.template;
@@ -31,6 +30,7 @@ export function initMixin(Vue) {
         throw Error("没有可编译的模版！");
       }
       vm.$options.render = compileToFunctions(template);
+      console.log(vm.$options.render);
     }
 
     mountComponent(vm, el);

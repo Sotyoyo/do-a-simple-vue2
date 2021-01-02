@@ -3,6 +3,7 @@ export function patch(oldEl, vnode) {
   let elm = createElm(vnode); //根据虚拟节点 创建元素
   parentElm.insertBefore(elm, oldEl.nextSibling);
   parentElm.removeChild(oldEl);
+  return elm;
 }
 
 function createElm(vnode) {

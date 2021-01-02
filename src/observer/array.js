@@ -18,7 +18,13 @@ export let arrayMethods = Object.create(oldArrayMethods);
           break;
       }
 
-      if (inserted) ob.observeArray(inserted);
+      if (inserted) {
+        ob.observeArray(inserted);
+        // console.log(`- array touch inserted values`, this, inserted);
+      }
+
+      ob.dep.notify();
+
       return result; // 要返回本来的结果
     };
   }

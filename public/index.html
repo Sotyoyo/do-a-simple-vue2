@@ -10,12 +10,7 @@
 <body>
   <div id="app" class="app" a=1>
     <ul>
-      <li>
-        <p>p1 - {{name}}</p>
-      </li>
-      <li>
-        <p>p2 - {{person}}</p>
-      </li>
+      <li>{{ bigs}}</li>
     </ul>
   </div>
   <script src="../dist/umd/vue.js"></script>
@@ -24,15 +19,28 @@
       el: '#app',
       data() {
         return {
-          name: 'vue',
-          person: {
-            name: 'ft',
-            age: 25
-          }
+          bigs: [
+            { a: 1 },
+            [{ small: 1 }]
+          ]
         }
       }
     })
 
+    setTimeout(() => {
+      // vm.bigs[0].a = 2; // 可以检测到
+      // vm.bigs[0] = { big: 1 }; // 监测不到这个行为
+      // vm.bigs[1].push({ big: 2 }) // 可以检测到
+      // vm.bigs[1][0] = { big: 3 }; // 监测不到这个行为
+
+      // 请问下面两行一起打开，最后页面上会展示big等于多少？
+      vm.bigs[1].push({ big: 2 }) // 可以检测到
+      vm.bigs[1][1] = { big: 2000 }; // 
+    }, 1000)
+
+    // setTimeout(() => {
+    //   vm._update(vm._render());
+    // }, 2000)
 
   </script>
 </body>
