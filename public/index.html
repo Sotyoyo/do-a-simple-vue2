@@ -29,7 +29,9 @@
         // },
         fullName: {
           get() {
-            return this.firstName + ' ' + this.lastName
+            // 这里firstName 和lastName的sub watcher就是fullName的computed watcher
+            // 因为依赖收集的是computed
+            return this.firstName + '' + this.lastName
           },
           set(newValue) {
             console.log('fullname set new ', newValue)
@@ -38,13 +40,24 @@
       }
     })
 
+
     // 计算属性默认不执行，多次取值，
     // 如果依赖的值不变，就不会重新执行
     // 如果依赖的值变化 需要重新执行
     // dirty true 取值以后就变false 依赖值变化了，再变成true
 
+    // 计算属性中依赖的值应该要记录 1. 计算属性watcher 2. 渲染watcher， 它们是需要依赖收集的
+
+
     setTimeout(() => {
-      vm.lastName = '3'
+      vm.lastName = '3';
+      vm.fullName;
+
+      // vm.$nextTick(() => {
+      //   console.log(vm.fullName)
+      // })
+
+      console.log(vm._computedWatchers)
     }, 1000)
   </script>
 </body>

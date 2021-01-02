@@ -14,6 +14,7 @@ class Watcher {
     this.options = options;
     this.user = !!options.user;
     this.lazy = !!options.lazy;
+    this.dirty = !!options.lazy;
 
     if (typeof exprOrFn === "string") {
       this.getter = function () {
@@ -25,9 +26,7 @@ class Watcher {
         return obj;
       };
     } else {
-      this.getter = () => {
-        exprOrFn();
-      };
+      this.getter = exprOrFn;
     }
 
     // new watcher的时候就会调一遍 除非是lazy
@@ -46,14 +45,20 @@ class Watcher {
   get() {
     // console.trace();
     pushTarget(this);
-    const value = this.getter();
+    // 必须要绑定给vm 否则就是watcher调
+    const value = this.getter.call(this.vm);
     popTarget(this);
     return value;
   }
 
   update() {
-    // vue中的更新操作是异步的
-    queueWatcher(this); // 多次调用update 我希望先将watcher缓存下来，等一会一起更新
+    // 在computed watcher中更新值
+    if (this.lazy) {
+      this.dirty = true;
+    } else {
+      // vue中的更新操作是异步的
+      queueWatcher(this); // 多次调用update 我希望先将watcher缓存下来，等一会一起更新
+    }
   }
 
   run() {
@@ -66,6 +71,18 @@ class Watcher {
     if (this.user) {
       this.cb.call(this.vm, newValue, oldValue);
     }
+  }
+
+  evaluate() {
+    this.value = this.get();
+    this.dirty = false;
+  }
+
+  // 把计算属性的watcher 依赖的依赖项depend到当前watcher
+  depend() {
+    this.deps.forEach((dep) => {
+      dep.depend();
+    });
   }
 }
 

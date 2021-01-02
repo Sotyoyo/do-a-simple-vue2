@@ -23,13 +23,17 @@ class Dep {
   }
 }
 
+// 可能有多层
+let stack = [];
 Dep.target = null;
 
 export function pushTarget(watcher) {
   Dep.target = watcher;
+  stack.push(watcher);
 }
 export function popTarget(watcher) {
-  Dep.target = null;
+  stack.pop();
+  Dep.target = stack[stack.length - 1];
 }
 
 export default Dep;
