@@ -1,30 +1,14 @@
-## rollup简单配置
+## 你好，vue2
 
-// babel核心
-@babel/preset-env @babel/core
+这是一个为了学习vue2核心原理的项目，一步一步，手撸一个简单的vue2.
 
-// rollup核心
-rollup
+## 完成部分
+1. 响应式
+2. 模版编译
+3. 依赖收集
+4. 异步更新
+5. watch-api
+6. computed-api
+7. 
 
-// rollup plugins 
-rollup-plugin-babel rollup-plugin-serve
-
-```
-rollup -c -w
--c, --config <filename> // Use this config file 
--w, --watch // Watch files in bundle and rebuild on changes
--o, --file <output> // Single output file (if absent, prints to stdout)
-
-```
-
-// 
-exclude: "node_modules/**", // glob语法
-
-
-## 生成代码
-
-1. 模版引擎原理
-```
-<!-- js沙箱 -->
-let render = new Function(`with(this){return ${code}}`);
-```
+ 
