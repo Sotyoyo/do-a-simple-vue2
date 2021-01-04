@@ -6,15 +6,27 @@ let id = 0;
 class Watcher {
   constructor(vm, exprOrFn, cb, options) {
     this.id = "watcher-" + id++;
+    this.vm = vm;
     this.exprOrFn = exprOrFn;
     this.cb = cb;
     this.deps = [];
     this.depsId = new Set();
     this.options = options;
+    this.user = !!options.user;
 
-    this.getter = exprOrFn;
+    if (typeof exprOrFn === "string") {
+      this.getter = function () {
+        let path = exprOrFn.split(".");
+        let obj = path.reduce((pre, currentPath) => {
+          return pre[currentPath];
+        }, vm);
+        return obj;
+      };
+    } else {
+      this.getter = exprOrFn;
+    }
 
-    this.get();
+    this.value = this.get();
   }
 
   addDep(dep) {
@@ -28,8 +40,11 @@ class Watcher {
 
   get() {
     pushTarget(this);
-    this.getter();
+    // 记录老的值
+    const value = this.getter.call(this.vm);
     popTarget(this);
+    // 返回老的值
+    return value;
   }
 
   update() {
@@ -38,8 +53,14 @@ class Watcher {
   }
 
   run() {
-    // 后续要有其他功能
-    this.get();
+    const oldValue = this.value;
+    const newValue = this.get();
+
+    if (this.user) {
+      this.cb(newValue, oldValue);
+      // 别忘了把新的值记录为下次的老值
+      this.value = newValue;
+    }
   }
 }
 
