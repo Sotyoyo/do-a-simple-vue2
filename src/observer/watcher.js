@@ -43,7 +43,6 @@ class Watcher {
   }
 
   get() {
-    // console.trace();
     pushTarget(this);
     // 必须要绑定给vm 否则就是watcher调
     const value = this.getter.call(this.vm);

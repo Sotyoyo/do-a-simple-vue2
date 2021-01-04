@@ -27,7 +27,5 @@ export function mountComponent(vm, el) {
       console.log("更新视图了");
     },
     true
-  ); // 他是一个渲染watcher  后续有其他的watcher
-
-  vm.$wc = wc;
+  );
 }
