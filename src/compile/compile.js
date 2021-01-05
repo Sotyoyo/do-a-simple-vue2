@@ -5,8 +5,6 @@ const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`); // 匹配标签结尾�
 const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配属性的
 const startTagClose = /^\s*(\/?)>/; // 匹配标签结束的 >
 
-let root = null;
-let stack = [];
 export const ELEMENT_TYPE = 1;
 export const TEXT_TYPE = 3;
 
@@ -24,7 +22,8 @@ export function parseHtml(html) {
   // 1. 词法解析
   // 2. 转成ast树
   // 3. 代码生成
-
+  let root = null;
+  let stack = [];
   function start(tagName, attrs) {
     // console.log(" meet startTag: ", tagName, attrs);
     let element = createAstElemnt(tagName, attrs, ELEMENT_TYPE);
