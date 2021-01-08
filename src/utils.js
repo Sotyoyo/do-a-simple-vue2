@@ -61,3 +61,58 @@ export function nextTick(cb) {
     waiting = true;
   }
 }
+
+const lifeCycleHooks = [
+  "beforeCreate",
+  "created",
+  "beforeMount",
+  "mounted",
+  "beforeUpdate",
+  "updated",
+  "beforeDestroy",
+  "destroyed",
+];
+const strats = {};
+lifeCycleHooks.forEach((hookName) => {
+  strats[hookName] = mergeHook;
+});
+
+function mergeHook(parent, child) {
+  if (!parent && isFunction(child)) {
+    return [child];
+  } else if (Array.isArray(parent) && isFunction(child)) {
+    return [...parent, child];
+  }
+}
+
+export function mergeOptions(parent, child) {
+  const options = {};
+  for (let key in parent) {
+    mergeField(key);
+  }
+  for (let key in child) {
+    if (!parent.hasOwnProperty(key)) {
+      mergeField(key);
+    }
+  }
+
+  function mergeField(key) {
+    const parentVal = parent[key];
+    const childVal = child[key];
+
+    if (strats[key]) {
+      isFunction(strats[key]) &&
+        (options[key] = strats[key](parentVal, childVal));
+    } else {
+      // 非策略的话
+      if (!isObject(parentVal) && !isObject(childVal)) {
+        // 都不是对象的话
+        options[key] = childVal || parentVal;
+      } else {
+        options[key] = { ...parentVal, ...childVal };
+      }
+    }
+  }
+  // console.log(parent, child, options);
+  return options;
+}

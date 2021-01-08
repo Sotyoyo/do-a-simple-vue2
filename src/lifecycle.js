@@ -1,11 +1,11 @@
 import Watcher from "./observer/watcher";
 import { nextTick } from "./utils";
 import { patch } from "./vdom/patch";
+
 export function lifecycleMixin(Vue) {
   Vue.prototype._update = function (vnode) {
     // 既有初始化 又又更新
     const vm = this;
-
     vm.$el = patch(vm.$el, vnode);
   };
 
@@ -28,4 +28,12 @@ export function mountComponent(vm, el) {
     },
     true
   );
+}
+
+export function callHook(vm, hookName) {
+  let handlers = vm.$options[hookName];
+  if (!Array.isArray(handlers)) return;
+  for (let fc of handlers) {
+    fc.call(vm);
+  }
 }
