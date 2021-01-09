@@ -9,48 +9,31 @@
 
 <body>
   <div id="app" class="app" a=1>
+    <my-button1></my-button1>
+    <my-button2></my-button2>
   </div>
-  <script src="../dist/umd/vue.js"></script>
+  <!-- <script src="../dist/umd/vue.js"></script> -->
+  <script src="../node_modules/vue/dist/vue.js"></script>
   <script>
+    Vue.component('my-button1', {
+      template: `<button class="my-button1">全局组件按钮</button>`
+    })
 
-    Vue.mixin({
-      data() {
-        return {
-          lastName: '16',
-          person: {
-            name: 'll',
-            age: 30
-          }
-        }
-      },
-      beforeCreate(arg1) {
-        console.log(`- beforeCreate 1`)
-      }
+    const MyButton2 = Vue.extend({
+      name: 'MyButton2',
+      template: `<button onclick="this.toggleMessage" class="my-button2">局部组件按钮</button>`,
     })
-    Vue.mixin({
-      data() {
-        return {
-          firstName: 'react'
-        }
-      },
-      beforeCreate(arg2) {
-        console.log(`- beforeCreate 2`)
-      }
-    })
+
+
     let vm = new Vue({
       el: '#app',
-      data() {
-        return {
-          firstName: 'vue',
-          lastName: '2',
-          person: {
-            name: 'ft',
-            age: 25
-          }
-        }
+      components: {
+        MyButton2: MyButton2
       },
-      beforeCreate(arg3) {
-        console.log(`- beforeCreate 3`)
+      methods: {
+        toggleMessage() {
+          alert(1)
+        }
       }
     })
     console.log(vm)
