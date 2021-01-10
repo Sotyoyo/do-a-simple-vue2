@@ -61,6 +61,6 @@ function getChildren(ele) {
 
 export function generate(ast) {
   const code = getChildren(ast);
-  // console.log(code);
+  console.log(code);
   return code;
 }

@@ -85,6 +85,18 @@ function mergeHook(parent, child) {
   }
 }
 
+// 让组件options的合并成为原型继承关系，局部组件没有就去找全局组件
+strats.components = function (parentVal, childVal) {
+  // Vue.options.components
+  let options = Object.create(parentVal); // 根据父对象构造一个新对象 options.__proto__= parentVal
+  if (childVal) {
+    for (let key in childVal) {
+      options[key] = childVal[key];
+    }
+  }
+  return options;
+};
+
 export function mergeOptions(parent, child) {
   const options = {};
   for (let key in parent) {
@@ -115,4 +127,22 @@ export function mergeOptions(parent, child) {
   }
   // console.log(parent, child, options);
   return options;
+}
+
+export function isReservedTag(tagname) {
+  // 非全量判断
+  return [
+    "a",
+    "div",
+    "button",
+    "span",
+    "p",
+    "h1",
+    "section",
+    "input",
+    "img",
+    "ul",
+    "li",
+    "ol",
+  ].includes(tagname);
 }

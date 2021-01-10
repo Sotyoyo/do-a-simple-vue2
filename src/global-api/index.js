@@ -21,13 +21,14 @@ export function initGlobalApi(Vue) {
   };
   // 3. 添加全局api-extend
   Vue.extend = function (opts) {
+    // 原型继承
     const Super = this; // 父亲大Vue
     const Sub = function VueComponent(options) {
-      this._init(options);
+      this._init(options); // 原型继承 没有继承构造函数 所以要写入
     };
     Sub.prototype = Object.create(Super.prototype);
     Sub.prototype.constructor = Sub; // 构造函数指向自己
-    Sub.options = mergeOptions(Super.options, opts); // 只和Vue.options合并
+    Sub.options = mergeOptions(Super.options, opts); // 先把extend接收到的options合并到Sub上去，后面实例化的时候还会再合并
     return Sub;
   };
 }

@@ -9,11 +9,11 @@
 
 <body>
   <div id="app" class="app" a=1>
-    <my-button1></my-button1>
-    <my-button2></my-button2>
+    <my-button1>1</my-button1>
+    <my-button2>2</my-button2>
   </div>
-  <!-- <script src="../dist/umd/vue.js"></script> -->
-  <script src="../node_modules/vue/dist/vue.js"></script>
+  <script src="../dist/umd/vue.js"></script>
+  <!-- <script src="../node_modules/vue/dist/vue.js"></script> -->
   <script>
     Vue.component('my-button1', {
       template: `<button class="my-button1">全局组件按钮</button>`
@@ -28,7 +28,7 @@
     let vm = new Vue({
       el: '#app',
       components: {
-        MyButton2: MyButton2
+        'my-button2': MyButton2
       },
       methods: {
         toggleMessage() {
